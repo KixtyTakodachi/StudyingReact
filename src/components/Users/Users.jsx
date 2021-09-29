@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { userAPI } from "../../api/api";
 import classes from "./Users.module.css";
 
 let Users = (props) => {
@@ -30,7 +31,7 @@ let Users = (props) => {
 				<div key={u.id}>
 					<span>
 						<div>
-							<NavLink to = {'/profile/' + u.id}>
+							<NavLink to={"/profile/" + u.id}>
 								<img
 									src={
 										u.photos.small != null
@@ -45,19 +46,49 @@ let Users = (props) => {
 						<div>
 							{u.followed ? (
 								<button
+									disabled={props.followingInProgress.some(
+										(id) => id === u.id
+									)}
 									onClick={() => {
-										props.unfollow(u.id);
-									}}
-								>
-									Follow
-								</button>
-							) : (
-								<button
-									onClick={() => {
-										props.follow(u.id);
+										props.toggleFollowingInProgress(
+											true,
+											u.id
+										);
+										userAPI.unfollow(u.id).then((data) => {
+											if (data.resultCode === 0) {
+												props.toggleFollowingInProgress(
+													false,
+													u.id
+												);
+												props.unfollow(u.id);
+											}
+										});
 									}}
 								>
 									Unfollow
+								</button>
+							) : (
+								<button
+									disabled={props.followingInProgress.some(
+										(id) => id === u.id
+									)}
+									onClick={() => {
+										props.toggleFollowingInProgress(
+											true,
+											u.id
+										);
+										userAPI.follow(u.id).then((data) => {
+											if (data.resultCode === 0) {
+												props.toggleFollowingInProgress(
+													false,
+													u.id
+												);
+												props.follow(u.id);
+											}
+										});
+									}}
+								>
+									Follow
 								</button>
 							)}
 						</div>
