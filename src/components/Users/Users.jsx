@@ -1,6 +1,5 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { userAPI } from "../../api/api";
 import classes from "./Users.module.css";
 
 let Users = (props) => {
@@ -50,19 +49,7 @@ let Users = (props) => {
 										(id) => id === u.id
 									)}
 									onClick={() => {
-										props.toggleFollowingInProgress(
-											true,
-											u.id
-										);
-										userAPI.unfollow(u.id).then((data) => {
-											if (data.resultCode === 0) {
-												props.toggleFollowingInProgress(
-													false,
-													u.id
-												);
-												props.unfollow(u.id);
-											}
-										});
+										props.unfollow(u.id);
 									}}
 								>
 									Unfollow
@@ -73,19 +60,7 @@ let Users = (props) => {
 										(id) => id === u.id
 									)}
 									onClick={() => {
-										props.toggleFollowingInProgress(
-											true,
-											u.id
-										);
-										userAPI.follow(u.id).then((data) => {
-											if (data.resultCode === 0) {
-												props.toggleFollowingInProgress(
-													false,
-													u.id
-												);
-												props.follow(u.id);
-											}
-										});
+										props.follow(u.id);
 									}}
 								>
 									Follow

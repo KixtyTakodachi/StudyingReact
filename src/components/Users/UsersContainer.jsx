@@ -2,36 +2,22 @@ import Users from "./Users";
 import React from "react";
 import { connect } from "react-redux";
 import {
-	follow,
 	setCurrentPage,
-	setTotalUsersCount,
-	setUsers,
-	unfollow,
-	setIsFetching,
 	toggleFollowingInProgress,
+	getUsers,
+	follow,
+	unfollow,
 } from "../../redux/users-reducer";
 import Preloader from "../common/Preloader/Preloader.jsx";
-import { userAPI } from "../../api/api";
+import { compose } from "redux";
 
 class UsersContainer extends React.Component {
 	componentDidMount() {
-		this.props.setIsFetching(true);
-		userAPI
-			.getUsers(this.props.currentPage, this.props.pageSize)
-			.then((data) => {
-				this.props.setIsFetching(false);
-				this.props.setUsers(data.items);
-				this.props.setTotalUsersCount(data.totalCount);
-			});
+		this.props.getUsers(this.props.currentPage, this.props.pageSize);
 	}
 
 	onPageChanged = (pageNumber) => {
-		this.props.setCurrentPage(pageNumber);
-		this.props.setIsFetching(true);
-		userAPI.getUsers(pageNumber, this.props.pageSize).then((data) => {
-			this.props.setIsFetching(false);
-			this.props.setUsers(data.items);
-		});
+		this.props.getUsers(pageNumber, this.props.pageSize);
 	};
 
 	render() {
@@ -44,10 +30,12 @@ class UsersContainer extends React.Component {
 					currentPage={this.props.currentPage}
 					onPageChanged={this.onPageChanged}
 					users={this.props.users}
+					toggleFollowingInProgress={
+						this.props.toggleFollowingInProgress
+					}
+					followingInProgress={this.props.followingInProgress}
 					follow={this.props.follow}
 					unfollow={this.props.unfollow}
-					toggleFollowingInProgress = {this.props.toggleFollowingInProgress}
-					followingInProgress = {this.props.followingInProgress}
 				/>
 			</>
 		);
@@ -65,12 +53,12 @@ let mapStateToProps = (state) => {
 	};
 };
 
-export default connect(mapStateToProps, {
-	follow,
-	unfollow,
-	setUsers,
-	setCurrentPage,
-	setTotalUsersCount,
-	setIsFetching,
-	toggleFollowingInProgress,
-})(UsersContainer);
+export default compose(
+	connect(mapStateToProps, {
+		setCurrentPage,
+		toggleFollowingInProgress,
+		getUsers,
+		follow,
+		unfollow,
+	})
+)(UsersContainer);
