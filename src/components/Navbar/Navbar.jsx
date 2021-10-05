@@ -22,13 +22,13 @@ const Navbar = (props) => {
 				</NavLink>
 			</div>
 			<div className={classes.item}>
-				<a>News</a>
+				<span>News</span>
 			</div>
 			<div className={classes.item}>
-				<a>Music</a>
+				<span>Music</span>
 			</div>
 			<div className={classes.item}>
-				<a>Settings</a>
+				<span>Settings</span>
 			</div>
 			<div className={classes.item}>
 				<FriendsContainer />
