@@ -1,26 +1,21 @@
 import React from "react";
 import Preloader from "../../common/Preloader/Preloader";
 import classes from "./ProfileInfo.module.css";
-import ProfileStatus from "./ProfileStatus"
+import ProfileSatusWithHooks from "./ProfileStatusWithHooks";
 
-const ProfileInfo = (props) => {
-	
-	if(!props.profile){
-		return <Preloader/>
+const ProfileInfo = ({ profile, status, updateStatus }) => {
+	if (!profile) {
+		return <Preloader />;
 	}
 
 	return (
 		<div>
-			<div>
-				{/* <img
-					src="https://pix10.agoda.net/hotelImages/301716/-1/fe9724d8fb4da3dd4590353bd771a276.jpg?s=1024x768"
-					alt="beach"
-					className={classes.bg}
-				></img> */}
-			</div>
 			<div className={classes.descriptionBlock}>
-				<img src = {props.profile.photos.large} alt = "ava"/>
-				<ProfileStatus status = {props.status} updateStatus = {props.updateStatus}/>
+				<img src={profile.photos.large} alt="ava" />
+				<ProfileSatusWithHooks
+					status={status}
+					updateStatus={updateStatus}
+				/>
 			</div>
 		</div>
 	);
