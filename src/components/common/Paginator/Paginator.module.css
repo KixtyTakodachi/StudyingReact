@@ -3,13 +3,13 @@
 }
 
 .pageNumber {
-    margin: 0 2px;
+	margin: 0 2px;
 	padding: 2px;
 }
 
 .selectedPage {
 	font-weight: bold;
-	background-color: black;
-    color: white;
-    border-radius: 100%;
+	border: 1px solid #9BB8D5;
+	box-shadow: 0 0 7px #2468ac;
+	border-radius: 100%;
 }
