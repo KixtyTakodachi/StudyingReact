@@ -3,7 +3,7 @@ import classes from "./FormsControl.module.css";
 import { Field } from "redux-form";
 
 const FormElementCreator = (Component) => {
-	const FormElement = ({ input, meta:{error, touched}, ...props }) => {
+	const FormElement = ({ input, meta: { error, touched }, ...props }) => {
 		const hasError = error && touched;
 		return (
 			<div
@@ -14,9 +14,7 @@ const FormElementCreator = (Component) => {
 				<div>
 					<Component {...input} {...props} />
 				</div>
-				<div>
-					{hasError ? <span>{error}</span> : <span></span>}
-				</div>
+				<div>{hasError ? <span>{error}</span> : <span></span>}</div>
 			</div>
 		);
 	};

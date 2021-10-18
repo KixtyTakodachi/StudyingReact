@@ -6,6 +6,18 @@
 	display: block;
 	margin: 0 auto;
 }
-.mainPhoto{
+.mainPhoto {
 	width: 300px;
+}
+
+.contact {
+	padding-left: 15px;
+}
+.formSummaryError {
+	background-color: red;
+	padding: 5px;
+	color: white;
+	width: 20%;
+	text-align: center;
+	border-radius: 4px;
 }
