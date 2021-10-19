@@ -1,13 +1,15 @@
 import { stopSubmit } from "redux-form";
-import { authAPI } from "../api/api";
+import { authAPI, securityAPI } from "../api/api";
 
-const SET_USER_DATA = "samurai-network/auth/SET_USER_DATA";
+const SET_USER_DATA = "samurai-network/auth/SET_USER_DATA",
+	SET_CAPTCHA_URL = "SET_CAPTCHA_URL";
 
 let initalState = {
 	userId: null,
 	email: null,
 	login: null,
 	isAuth: false,
+	captchaURL: null,
 };
 
 const authReducer = (state = initalState, action) => {
@@ -16,6 +18,12 @@ const authReducer = (state = initalState, action) => {
 			return {
 				...state,
 				...action.payload,
+			};
+		}
+		case SET_CAPTCHA_URL: {
+			return {
+				...state,
+				captchaURL: action.captchaURL,
 			};
 		}
 		default:
@@ -35,6 +43,13 @@ export const setAuthUserData = (userId, email, login, isAuth) => {
 	};
 };
 
+export const setCaptchaURL = (captchaURL) => {
+	return {
+		type: SET_CAPTCHA_URL,
+		captchaURL,
+	};
+};
+
 export const getAuthUserData = () => {
 	return async (dispatch) => {
 		let data = await authAPI.setAuthUserData();
@@ -45,13 +60,16 @@ export const getAuthUserData = () => {
 	};
 };
 
-export const login = (email, password, rememberMe) => {
+export const login = (email, password, rememberMe, captcha) => {
 	return async (dispatch) => {
-		let data = await authAPI.login(email, password, rememberMe);
+		let data = await authAPI.login(email, password, rememberMe, captcha);
 
 		if (data.resultCode === 0) {
 			dispatch(getAuthUserData());
 		} else {
+			if (data.resultCode === 10) {
+				dispatch(getCaptchaURL());
+			}
 			let message =
 				data.messages.length > 0
 					? data.messages[0]
@@ -67,6 +85,14 @@ export const logout = () => {
 		if (data.resultCode === 0) {
 			dispatch(setAuthUserData(null, null, null, false));
 		}
+	};
+};
+
+export const getCaptchaURL = () => {
+	return async (dispatch) => {
+		let data = await securityAPI.getCaptchaURL();
+		const captchaURL = data.url;
+		dispatch(setCaptchaURL(captchaURL));
 	};
 };
 

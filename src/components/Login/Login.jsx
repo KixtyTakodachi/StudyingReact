@@ -12,7 +12,7 @@ import {
 
 const maxLength30 = maxLengthCreator(30);
 
-const LoginForm = ({ handleSubmit, error }) => {
+const LoginForm = ({ handleSubmit, error, captchaURL }) => {
 	return (
 		<form onSubmit={handleSubmit}>
 			{CreateField("Email", "email", Input, "text", [
@@ -31,6 +31,14 @@ const LoginForm = ({ handleSubmit, error }) => {
 				null,
 				"Remember Me"
 			)}
+			{captchaURL ? (
+				<div>
+					<img src={captchaURL} alt="captcha" />
+					{CreateField("Captcha", "captcha", Input, "text", [
+						required,
+					])}
+				</div>
+			) : null}
 			{error && <div className={classes.formSummaryError}> {error}</div>}
 
 			<div>
@@ -44,7 +52,7 @@ const LoginReduxForm = reduxForm({ form: "login" })(LoginForm);
 
 const Login = (props) => {
 	const onSubmit = (formData) => {
-		props.login(formData.email, formData.password, formData.rememberMe);
+		props.login(formData.email, formData.password, formData.rememberMe, formData.captcha);
 	};
 
 	if (props.isAuth) {
@@ -53,12 +61,13 @@ const Login = (props) => {
 	return (
 		<div>
 			<h1>Login</h1>
-			<LoginReduxForm onSubmit={onSubmit} />
+			<LoginReduxForm onSubmit={onSubmit} captchaURL={props.captchaURL} />
 		</div>
 	);
 };
 
 const mapStateToProps = (state) => ({
+	captchaURL: state.auth.captchaURL,
 	isAuth: state.auth.isAuth,
 });
 

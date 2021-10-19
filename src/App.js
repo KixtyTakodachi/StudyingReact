@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { initializeApp } from "./redux/app-reducer";
 import Preloader from "./components/common/Preloader/Preloader";
 import { compose } from "redux";
-import { withRouter } from "react-router";
+import { Redirect, Switch, withRouter } from "react-router";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import store from "./redux/redux-store";
@@ -22,8 +22,23 @@ const ProfileContainer = React.lazy(() =>
 );
 
 class App extends React.Component {
+	catchAllUnhandledErrors = (promiseRejectionEvent) => {
+		alert("Some error occured");
+		console.error(promiseRejectionEvent);
+	};
+
 	componentDidMount() {
 		this.props.initializeApp();
+		window.addEventListener("unhandledrejection", (promiseRejectionEvent) =>
+			this.catchAllUnhandledErrors(promiseRejectionEvent)
+		);
+	}
+	componentWillUnmount() {
+		window.removeEventListener(
+			"unhandledrejection",
+			(promiseRejectionEvent) =>
+				this.catchAllUnhandledErrors(promiseRejectionEvent)
+		);
 	}
 	render() {
 		if (!this.props.initialized) {
@@ -34,19 +49,22 @@ class App extends React.Component {
 					<HeaderContainer />
 					<Navbar />
 					<div className="app-wrapper-content">
-						<Route
-							path="/dialogs"
-							render={withSuspense(DialogsContainer)}
-						/>
-						<Route
-							path="/profile/:userId?"
-							render={withSuspense(ProfileContainer)}
-						/>
-						<Route
-							path="/users"
-							render={() => <UsersContainer />}
-						/>
-						<Route path="/login" render={() => <Login />} />
+						<Switch>
+							<Route
+								path="/dialogs"
+								render={withSuspense(DialogsContainer)}
+							/>
+							<Route
+								path="/profile/:userId?"
+								render={withSuspense(ProfileContainer)}
+							/>
+							<Route
+								path="/users"
+								render={() => <UsersContainer />}
+							/>
+							<Route path="/login" render={() => <Login />} />
+							<Redirect from="/" to="/profile" />
+						</Switch>
 					</div>
 				</div>
 			);
